@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NeonStore Admin Panel Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+    --bg:#0a0a0a;
+    --card:#141414;
+    --input:#222;
+    --green:#00ff99;
+    --red:#ff0055;
+    --blue:#00ccff;
+    --yellow:#ffcc00;
+    --text:#fff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    color:white;
+    font-family:'Open Sans',sans-serif;
+    padding-bottom:80px;
+}
+
+h1,h2,h3{
+    font-family:'Montserrat',sans-serif;
+}
+
+.admin-header{
+    background:#111;
+    padding:20px;
+    border-bottom:2px solid var(--green);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+.admin-logo{
+    color:var(--green);
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+.tabs{
+    display:flex;
+    gap:10px;
+    padding:15px;
+    background:#111;
+    overflow:auto;
+}
+
+.tab-btn{
+    border:none;
+    padding:10px 20px;
+    border-radius:6px;
+    cursor:pointer;
+    background:#222;
+    color:#888;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.tab-btn.active{
+    background:var(--green);
+    color:black;
+}
+
+.section{
+    display:none;
+    padding:20px;
+}
+
+.section.active{
+    display:block;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    background:var(--card);
+    border:1px solid #333;
+    border-radius:10px;
+    padding:15px;
+    text-align:center;
+}
+
+.stat-num{
+    font-size:1.5rem;
+    font-weight:bold;
+}
+
+.stat-label{
+    font-size:0.8rem;
+    color:#777;
+}
+
+.c-green{color:var(--green);}
+.c-red{color:var(--red);}
+.c-blue{color:var(--blue);}
+
+.form-container{
+    background:var(--card);
+    border:1px solid #333;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.form-title{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+    font-size:1.2rem;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    color:#aaa;
+    font-size:0.9rem;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:var(--input);
+    color:white;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+}
+
+.col{
+    flex:1;
+}
+
+.btn-action{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-save{
+    background:var(--green);
+    color:black;
+}
+
+.preview-wrapper{
+    margin-top:15px;
+    display:none;
+}
+
+#previewImg{
+    width:100%;
+    max-width:280px;
+    height:200px;
+    object-fit:cover;
+    border-radius:10px;
+    border:2px solid var(--green);
+    background:#000;
+}
+
+.preview-file{
+    margin-top:15px;
+    display:none;
+}
+
+.product-item, .user-item{
+    background:var(--card);
+    border-left:4px solid var(--green);
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.product-item.inactive, .user-item.blocked{
+    border-left-color:#444;
+    opacity:0.6;
+}
+
+.user-item.deleted-status {
+    border-left-color: var(--red);
+    background: #1a1114;
+}
+
+.p-img, .u-avatar{
+    width:70px;
+    height:70px;
+    border-radius:8px;
+    object-fit:cover;
+    background:#000;
+}
+
+.u-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #222;
+    color: var(--green);
+    font-size: 1.5rem;
+    border: 1px solid #333;
+}
+
+.p-info, .u-info{
+    flex:1;
+}
+
+.p-title, .u-title{
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.p-meta, .u-meta{
+    color:#888;
+    font-size:0.85rem;
+}
+
+.p-actions, .u-actions{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.btn-sm{
+    border:none;
+    border-radius:5px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-weight: 600;
+}
+
+.btn-edit, .btn-allow{
+    background:var(--blue);
+    color:black;
+}
+
+.btn-restore {
+    background: var(--green);
+    color: black;
+}
+
+.btn-block{
+    background:var(--yellow);
+    color:black;
+}
+
+.btn-del{
+    background:var(--red);
+    color:white;
+}
+
+.toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#222;
+    padding:12px 20px;
+    border-radius:30px;
+    opacity:0;
+    transition:0.3s;
+    z-index:9999;
+}
+
+.toast.show{
+    opacity:1;
+    bottom:40px;
+}
+
+.notification-item{
+    background:var(--card);
+    border-left:4px solid var(--blue);
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.notification-title{
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.notification-msg{
+    color:#bbb;
+    font-size:0.92rem;
+    margin-bottom:10px;
+}
+
+.notification-meta{
+    color:#777;
+    font-size:0.8rem;
+    margin-bottom:10px;
+}
+
+.n-info{
+    border-left-color:var(--blue);
+}
+
+.n-success{
+    border-left-color:var(--green);
+}
+
+.n-warning{
+    border-left-color:var(--yellow);
+}
+
+.n-offer{
+    border-left-color:var(--red);
+}
+
+.update-box{
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+.update-tag{
+    display:inline-block;
+    padding:4px 10px;
+    background:var(--green);
+    color:black;
+    border-radius:30px;
+    font-size:12px;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.recycle-bin-wrapper {
+    margin-top: 40px;
+    border-top: 2px dashed #222;
+    padding-top: 20px;
+}
+
+@media(max-width:700px){
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+    .row{
+        flex-direction:column;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="admin-header">
+    <div class="admin-logo">ADMIN PANEL PRO</div>
+    <div style="font-size:0.8rem;color:#666;">v6.0</div>
+</div>
+
+<div class="tabs">
+
+<button class="tab-btn active" onclick="switchTab(event,'users')">
+Users
+</button>
+
+<button class="tab-btn" onclick="switchTab(event,'products')">
+Products
+</button>
+
+<button class="tab-btn" onclick="switchTab(event,'notifications')">
+Notifications
+</button>
+
+<button class="tab-btn" onclick="switchTab(event,'settings')">
+Settings
+</button>
+
+</div>
+
+<div id="tab-users" class="section active">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-num c-blue" id="statTotalUsers">0</div>
+            <div class="stat-label">TOTAL USERS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num c-green" id="statActiveUsers">0</div>
+            <div class="stat-label">ALLOWED</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num c-red" id="statBlockedUsers">0</div>
+            <div class="stat-label">BLOCKED</div>
+        </div>
+    </div>
+
+    <h3 style="margin-bottom:10px;"><i class="fa-solid fa-users"></i> Registered Users</h3>
+    <div id="userList">Loading...</div>
+
+    <div class="recycle-bin-wrapper">
+        <h3 style="margin-bottom:15px; color: var(--red);"><i class="fa-solid fa-trash-can"></i> Recycle Bin (Deleted Users)</h3>
+        <div id="deletedUserList">Loading recycle bin...</div>
+    </div>
+</div>
+
+<div id="tab-products" class="section">
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<div class="stat-num c-blue" id="statTotal">0</div>
+<div class="stat-label">TOTAL</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-num c-green" id="statFree">0</div>
+<div class="stat-label">FREE</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-num c-red" id="statPaid">0</div>
+<div class="stat-label">PAID</div>
+</div>
+
+</div>
+
+<div class="form-container">
+
+<div class="form-title">
+<span id="formHeader">Add Product</span>
+</div>
+
+<form id="productForm">
+
+<input type="hidden" id="prodId">
+
+<div class="input-group">
+<label>Title</label>
+<input type="text" id="pTitle" required>
+</div>
+
+<div class="input-group">
+<label>Description</label>
+<textarea id="pDesc" rows="3"></textarea>
+</div>
+
+<div class="row">
+
+<div class="col input-group">
+<label>Category</label>
+<input type="text" id="pCat">
+</div>
+
+<div class="col input-group">
+<label>File Size</label>
+<input type="text" id="pSize">
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col input-group">
+<label>Type</label>
+
+<select id="pType" onchange="togglePrice(this.value)">
+
+<option value="Free">Free</option>
+<option value="Paid">Paid</option>
+
+</select>
+
+</div>
+
+<div class="col input-group">
+<label>Price</label>
+<input type="number" id="pPrice" disabled value="0">
+</div>
+
+<div class="col input-group">
+<label>Discount</label>
+<input type="number" id="pDisc" disabled value="0">
+</div>
+
+</div>
+
+<div class="input-group">
+<label>Image URL</label>
+
+<input type="url" id="pImgUrl" placeholder="https://example.com/image.jpg" oninput="updateImagePreview()">
+
+</div>
+
+<div class="preview-wrapper" id="previewWrapper">
+<img id="previewImg">
+</div>
+
+<div class="input-group">
+<label>File URL</label>
+
+<input type="url" id="pDlUrl" placeholder="https://example.com/file.zip">
+
+</div>
+
+<div class="row" style="margin-bottom:15px;color:#ccc;font-size:0.9rem;">
+
+<div class="col">
+<input type="checkbox" id="pFeatured">
+Featured
+</div>
+
+<div class="col">
+<input type="checkbox" id="pTrending">
+Trending
+</div>
+
+<div class="col">
+<input type="checkbox" id="pActive" checked>
+Active
+</div>
+
+</div>
+
+<button type="submit" class="btn-action btn-save" id="btnSave">
+Save Product
+</button>
+
+</form>
+
+</div>
+
+<h3 style="margin-bottom:10px;">
+Product List
+</h3>
+
+<div id="productList">
+Loading...
+</div>
+
+</div>
+
+<div id="tab-notifications" class="section">
+
+<div class="form-container">
+
+<div class="form-title">
+Update Notification System
+</div>
+
+<div class="input-group">
+<label>Update Title</label>
+
+<input type="text" id="nTitle" placeholder="Version 6.0 Released">
+
+</div>
+
+<div class="input-group">
+<label>Update Message</label>
+
+<textarea id="nMessage" rows="4" placeholder="Added nwe features and fixed bugs"></textarea>
+
+</div>
+
+<div class="input-group">
+<label>Version</label>
+
+<input type="text" id="nVersion" placeholder="v6.0">
+
+</div>
+
+<div class="row">
+
+<div class="col input-group">
+
+<label>Type</label>
+
+<select id="nType">
+
+<option value="info">Info</option>
+<option value="success">Success</option>
+<option value="warning">Warning</option>
+<option value="offer">Offer</option>
+
+</select>
+
+</div>
+
+<div class="col input-group">
+
+<label>Status</label>
+
+<select id="nActive">
+
+<option value="true">Active</option>
+<option value="false">Disabled</option>
+
+</select>
+
+</div>
+
+</div>
+
+<button class="btn-action btn-save" onclick="sendNotification()">
+Publish Update
+</button>
+
+</div>
+
+<h3 style="margin-bottom:10px;">
+Updates & Notifications
+</h3>
+
+<div id="notificationList">
+Loading...
+</div>
+
+</div>
+
+<div id="tab-settings" class="section">
+
+<div class="form-container">
+
+<div class="form-title">
+Payment Settings
+</div>
+
+<div class="input-group">
+
+<label>Admin UPI</label>
+
+<input type="text" id="adminUpi">
+
+</div>
+
+<button class="btn-action btn-save" onclick="saveSettings()">
+Save Settings
+</button>
+
+</div>
+
+</div>
+
+<div class="toast" id="toast">
+Done
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, remove, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+    apiKey: "your",
+    authDomain: "your",
+    databaseURL: "your",
+    projectId: "your",
+    storageBucket: "your",
+    messagingSenderId: "your",
+    appId: "your",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* TAB SYSTEM */
+window.switchTab = (event,tabName)=>{
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+tabName).classList.add('active');
+    event.target.classList.add('active');
+};
+
+/* USERS & RECYCLE BIN CONTROLLER */
+const usersRef = ref(db, 'users');
+const deletedUsersRef = ref(db, 'deleted_users');
+
+// 1. Fetch Active Users
+onValue(usersRef, (snapshot) => {
+    const data = snapshot.val();
+    const userListDiv = document.getElementById('userList');
+    userListDiv.innerHTML = '';
+
+    let totalUsers = 0;
+    let allowedUsers = 0;
+    let blockedUsers = 0;
+
+    if (data) {
+        const arr = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+        })).reverse();
+
+        arr.forEach(user => {
+            totalUsers++;
+            const isBlocked = user.isBlock === true;
+            
+            if (isBlocked) {
+                blockedUsers++;
+            } else {
+                allowedUsers++;
+            }
+
+            const item = document.createElement('div');
+            item.className = `user-item ${isBlocked ? 'blocked' : ''}`;
+
+            item.innerHTML = `
+                <div class="u-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="u-info">
+                    <div class="u-title">${user.name || 'Unknown User'}</div>
+                    <div class="u-meta">
+                        Status: <span style="color: ${isBlocked ? 'var(--red)' : 'var(--green)'}">${isBlocked ? 'Blocked' : 'Access Allowed'}</span>
+                    </div>
+                </div>
+                <div class="u-actions">
+                    <button class="btn-sm ${isBlocked ? 'btn-allow' : 'btn-block'}" onclick="toggleUserAccess('${user.id}', ${isBlocked})">
+                        ${isBlocked ? 'Allow Access' : 'Block'}
+                    </button>
+                    <button class="btn-sm btn-del" onclick="moveToRecycleBin('${user.id}')">
+                        Delete
+                    </button>
+                </div>
+            `;
+            userListDiv.appendChild(item);
+        });
+    } else {
+        userListDiv.innerHTML = `<p style="color:#777;">No Active Users Found</p>`;
+    }
+
+    document.getElementById('statTotalUsers').innerText = totalUsers;
+    document.getElementById('statActiveUsers').innerText = allowedUsers;
+    document.getElementById('statBlockedUsers').innerText = blockedUsers;
+});
+
+// 2. Fetch Soft-Deleted Users (Recycle Bin)
+onValue(deletedUsersRef, (snapshot) => {
+    const data = snapshot.val();
+    const deletedUserListDiv = document.getElementById('deletedUserList');
+    deletedUserListDiv.innerHTML = '';
+
+    if (data) {
+        const arr = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+        })).reverse();
+
+        arr.forEach(user => {
+            const item = document.createElement('div');
+            item.className = `user-item deleted-status`;
+
+            item.innerHTML = `
+                <div class="u-avatar" style="color: var(--red); border-color: #442222;">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <div class="u-info">
+                    <div class="u-title" style="color: #aaa;">${user.name || 'Unknown User'}</div>
+                    <div class="u-meta" style="color: #666;">
+                        Deleted At: ${user.deletedAt || 'N/A'}
+                    </div>
+                </div>
+                <div class="u-actions">
+                    <button class="btn-sm btn-restore" onclick="restoreUser('${user.id}')">
+                        <i class="fa-solid fa-trash-arrow-up"></i> Restore
+                    </button>
+                    <button class="btn-sm btn-del" onclick="permanentDeleteUser('${user.id}')" style="background: #a30036;">
+                        Perm Delete
+                    </button>
+                </div>
+            `;
+            deletedUserListDiv.appendChild(item);
+        });
+    } else {
+        deletedUserListDiv.innerHTML = `<p style="color:#555; font-size:0.9rem;">Recycle bin is empty.</p>`;
+    }
+});
+
+// Toggle User Block/Unblock status
+window.toggleUserAccess = (id, currentBlockedStatus) => {
+    update(ref(db, 'users/' + id), {
+        isBlock: !currentBlockedStatus
+    })
+    .then(() => showToast(currentBlockedStatus ? 'User Allowed' : 'User Blocked'));
+};
+
+// Soft Delete System (Moves user data to deleted_users node)
+window.moveToRecycleBin = (id) => {
+    if(confirm('Are you sure you want to delete this user?\n(The account will be suspended but can be restored later)')){
+        const targetUserRef = ref(db, 'users/' + id);
+        
+        get(targetUserRef).then((snapshot) => {
+            if(snapshot.exists()) {
+                const userData = snapshot.val();
+                userData.deletedAt = new Date().toLocaleString(); // Deletion date log lagane ke liye
+                
+                // Copy data to deleted_users path
+                set(ref(db, 'deleted_users/' + id), userData).then(() => {
+                    // Remove from active users path
+                    remove(targetUserRef).then(() => {
+                        showToast('User moved to Recycle Bin');
+                    });
+                });
+            }
+        }).catch(() => showToast('Error processing request'));
+    }
+};
+
+// Restore System (Moves user back to active status)
+window.restoreUser = (id) => {
+    if(confirm('Do you want to restore this user account back to active users?')){
+        const targetDeletedRef = ref(db, 'deleted_users/' + id);
+        
+        get(targetDeletedRef).then((snapshot) => {
+            if(snapshot.exists()) {
+                const userData = snapshot.val();
+                
+                // Backup metadata saaf karein
+                if(userData.deletedAt) delete userData.deletedAt;
+                userData.isBlock = false; // Restore ke baad direct panel access allow karein
+
+                // Copy back to users node
+                set(ref(db, 'users/' + id), userData).then(() => {
+                    // Delete from bin path
+                    remove(targetDeletedRef).then(() => {
+                        showToast('User account restored successfully!');
+                    });
+                });
+            }
+        }).catch(() => showToast('Error restoring user'));
+    }
+};
+
+// Permanent Erase (Cannot be undone)
+window.permanentDeleteUser = (id) => {
+    if(confirm('🚨 CRITICAL WARNING!\n\nAre you sure you want to permanently delete this user?\nThis action CANNOT be undone and data will be lost forever.')){
+        remove(ref(db, 'deleted_users/' + id)).then(() => {
+            showToast('User account permanently erased');
+        });
+    }
+};
+
+/* PRICE TOGGLE */
+window.togglePrice = (v)=>{
+    const paid = v === 'Paid';
+    document.getElementById('pPrice').disabled = !paid;
+    document.getElementById('pDisc').disabled = !paid;
+};
+
+/* IMAGE URL FIX */
+function fixImageUrl(url){
+    if(!url) return '';
+    if(url.includes("drive.google.com")){
+        const match = url.match(/\/d\/(.*?)\//);
+        if(match && match[1]){
+            return `https://drive.google.com/thumbnail?id=${match[1]}`;
+        }
+    }
+    if(url.includes("dropbox.com")){
+        return url.replace("?dl=0","?raw=1");
+    }
+    return url;
+}
+
+/* IMAGE PREVIEW */
+window.updateImagePreview = ()=>{
+    const wrapper = document.getElementById('previewWrapper');
+    const img = document.getElementById('previewImg');
+    let url = document.getElementById('pImgUrl').value.trim();
+
+    if(!url){
+        wrapper.style.display='none';
+        return;
+    }
+
+    url = fixImageUrl(url);
+    img.src = '';
+    img.onload = () => { wrapper.style.display='block'; };
+    img.onerror = () => {
+        wrapper.style.display='block';
+        img.src = 'https://via.placeholder.com/300x200?text=Preview+Failed';
+    };
+    img.src = url;
+};
+
+/* PRODUCTS CONTROLLER */
+const productsRef = ref(db,'products');
+document.getElementById('productForm').addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const id = document.getElementById('prodId').value;
+    const payload = {
+        title: document.getElementById('pTitle').value,
+        description: document.getElementById('pDesc').value,
+        category: document.getElementById('pCat').value,
+        fileSize: document.getElementById('pSize').value,
+        priceType: document.getElementById('pType').value,
+        price: document.getElementById('pPrice').value,
+        discount: document.getElementById('pDisc').value,
+        imageUrl: fixImageUrl(document.getElementById('pImgUrl').value),
+        downloadUrl: document.getElementById('pDlUrl').value,
+        isFeatured: document.getElementById('pFeatured').checked,
+        isTrending: document.getElementById('pTrending').checked,
+        isActive: document.getElementById('pActive').checked,
+        timestamp: Date.now()
+    };
+
+    if(id){
+        update(ref(db,'products/'+id),payload).then(()=>showToast('Product Updated'));
+    }else{
+        push(productsRef,payload).then(()=>showToast('Product Added'));
+    }
+    resetForm();
+});
+
+/* LOAD PRODUCTS */
+onValue(productsRef,(snapshot)=>{
+    const data = snapshot.val();
+    const listDiv = document.getElementById('productList');
+    listDiv.innerHTML='';
+
+    let total=0, free=0, paid=0;
+
+    if(data){
+        const arr = Object.keys(data).map(key=>({
+            id:key,
+            ...data[key]
+        })).reverse();
+
+        window.allProducts = arr;
+
+        arr.forEach(p=>{
+            total++;
+            p.priceType==='Free' ? free++ : paid++;
+
+            const item = document.createElement('div');
+            item.className = `product-item ${p.isActive ? '' : 'inactive'}`;
+            item.innerHTML = `
+                <img src="${fixImageUrl(p.imageUrl)}" class="p-img" onerror="this.src='https://via.placeholder.com/70x70?text=No+Img'">
+                <div class="p-info">
+                    <div class="p-title">${p.title}</div>
+                    <div class="p-meta">${p.priceType} • ${p.category || 'No Category'}</div>
+                </div>
+                <div class="p-actions">
+                    <button class="btn-sm btn-edit" onclick="editProduct('${p.id}')">Edit</button>
+                    <button class="btn-sm btn-del" onclick="deleteProduct('${p.id}')">Delete</button>
+                </div>
+            `;
+            listDiv.appendChild(item);
+        });
+    }
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statFree').innerText = free;
+    document.getElementById('statPaid').innerText = paid;
+});
+
+/* EDIT PRODUCT */
+window.editProduct = (id)=>{
+    const p = window.allProducts.find(x=>x.id===id);
+    if(!p) return;
+
+    document.getElementById('prodId').value=id;
+    document.getElementById('formHeader').innerText = 'Edit Product';
+    document.getElementById('btnSave').innerText = 'Update Product';
+    document.getElementById('pTitle').value=p.title;
+    document.getElementById('pDesc').value=p.description;
+    document.getElementById('pCat').value=p.category;
+    document.getElementById('pSize').value=p.fileSize;
+    document.getElementById('pType').value=p.priceType;
+    document.getElementById('pPrice').value=p.price;
+    document.getElementById('pDisc').value=p.discount;
+    document.getElementById('pImgUrl').value=p.imageUrl;
+    document.getElementById('pDlUrl').value=p.downloadUrl;
+    document.getElementById('pFeatured').checked=p.isFeatured;
+    document.getElementById('pTrending').checked=p.isTrending;
+    document.getElementById('pActive').checked=p.isActive;
+
+    togglePrice(p.priceType);
+    updateImagePreview();
+    window.scrollTo({top:0, behavior:'smooth'});
+};
+
+/* DELETE PRODUCT */
+window.deleteProduct = (id)=>{
+    if(confirm('Delete Product?')){
+        remove(ref(db,'products/'+id)).then(()=>showToast('Deleted'));
+    }
+};
+
+/* RESET FORM */
+window.resetForm = ()=>{
+    document.getElementById('productForm').reset();
+    document.getElementById('prodId').value='';
+    document.getElementById('formHeader').innerText = 'Add Product';
+    document.getElementById('btnSave').innerText = 'Save Product';
+    document.getElementById('previewWrapper').style.display='none';
+};
+
+/* SETTINGS CONTROLLER */
+const settingsRef = ref(db,'settings');
+onValue(settingsRef,(snap)=>{
+    const data = snap.val();
+    if(data && data.upi){
+        document.getElementById('adminUpi').value = data.upi;
+    }
+});
+
+window.saveSettings = ()=>{
+    set(settingsRef,{ upi: document.getElementById('adminUpi').value })
+    .then(()=>showToast('Settings Saved'));
+};
+
+/* NOTIFICATIONS CONTROLLER */
+const notificationRef = ref(db,'notifications');
+window.sendNotification = ()=>{
+    const title = document.getElementById('nTitle').value.trim();
+    const message = document.getElementById('nMessage').value.trim();
+    const version = document.getElementById('nVersion').value.trim();
+    const type = document.getElementById('nType').value;
+    const active = document.getElementById('nActive').value==="true";
+
+    if(!title || !message){
+        showToast('Fill all fields');
+        return;
+    }
+
+    push(notificationRef,{
+        title, message, version, type, active, timestamp:Date.now()
+    })
+    .then(()=>{
+        showToast('Update Published');
+        document.getElementById('nTitle').value='';
+        document.getElementById('nMessage').value='';
+        document.getElementById('nVersion').value='';
+    });
+};
+
+/* LOAD NOTIFICATIONS */
+onValue(notificationRef,(snapshot)=>{
+    const data = snapshot.val();
+    const list = document.getElementById('notificationList');
+    list.innerHTML='';
+
+    if(data){
+        const arr = Object.keys(data).map(key=>({
+            id:key,
+            ...data[key]
+        })).reverse();
+
+        arr.forEach(n=>{
+            const div = document.createElement('div');
+            div.className = `notification-item n-${n.type}`;
+            const date = new Date(n.timestamp).toLocaleString();
+
+            div.innerHTML = `
+                <div class="update-tag">${n.version || 'LATEST'}</div>
+                <div class="notification-title">${n.title}</div>
+                <div class="notification-msg">${n.message}</div>
+                <div class="notification-meta">${n.type.toUpperCase()} • ${date}</div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-sm btn-edit" onclick="toggleNotification('${n.id}',${n.active})">${n.active ? 'Disable' : 'Enable'}</button>
+                    <button class="btn-sm btn-del" onclick="deleteNotification('${n.id}')">Delete</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }else{
+        list.innerHTML = `<p style="color:#777;">No Updates Found</p>`;
+    }
+});
+
+window.toggleNotification = (id,current)=>{
+    update(ref(db,'notifications/'+id),{ active:!current }).then(()=>showToast('Updated'));
+};
+
+window.deleteNotification = (id)=>{
+    if(confirm('Delete Notification?')){
+        remove(ref(db,'notifications/'+id)).then(()=>showToast('Deleted'));
+    }
+};
+
+/* TOAST UTILITY */
+function showToast(msg){
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(()=>{ t.classList.remove('show'); },3000);
+}
+
+</script>
+
+</body>
+</html>
